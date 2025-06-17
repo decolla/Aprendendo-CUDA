@@ -1,7 +1,6 @@
 #include "solve.h"
 #include <cuda_runtime.h>
 #include <iostream>
-#include <cstdio>
 
 __global__ void matrix_multiplication_kernel(const float* A, const float* B, float* C, int M, int N, int K) {
     int col = blockIdx.x * blockDim.x + threadIdx.x; 
@@ -21,9 +20,9 @@ void solve(const float* A, const float* B, float* C, int M, int N, int K) {
 
     float *d_a = nullptr, *d_b = nullptr, *d_c = nullptr;
 
-    cudaMalloc((void**)d_a, M * N * sizeof(float));
-    cudaMalloc((void**)d_b, N * K * sizeof(float));
-    cudaMalloc((void**)d_c, M * K * sizeof(float));
+    cudaMalloc((void**)&d_a, M * N * sizeof(float));
+    cudaMalloc((void**)&d_b, N * K * sizeof(float));
+    cudaMalloc((void**)&d_c, M * K * sizeof(float));
 
     cudaMemcpy(d_a, A, M * N * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_b, B, N * K * sizeof(float), cudaMemcpyHostToDevice);
@@ -69,9 +68,9 @@ int main(){
 
     solve(A, B, C, M, N, K);
 
-    for (int i = 0; i < M; i++){ // Itera pelas linhas
-        for (int j = 0; j < K; j++){ // Itera pelas colunas
-            std::cout << C[i * K + j] << " "; // Acessa o elemento linearmente
+    for (int i = 0; i < M; i++){ 
+        for (int j = 0; j < K; j++){ 
+            std::cout << C[i * K + j] << " ";
         }
     std::cout << std::endl; 
     }
